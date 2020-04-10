@@ -32,17 +32,21 @@ VisibilityFadingRow {
     id: editors
   }
   Component.onCompleted: {
-    editors.addEditor(qsTr("Vertex Tool"), "ray-vertex", "VertexEditorToolbar.qml")
-    editors.addEditor(qsTr("Split Tool"), "content-cut", "SplitFeatureToolbar.qml", GeometryEditorsModelSingleton.Line | GeometryEditorsModelSingleton.Polygon)
-    editors.addEditor(qsTr("Fill Ring Tool"), "picture_in_picture", "FillRingToolBar.qml", GeometryEditorsModelSingleton.Polygon)
+    editors.addEditor(qsTr("Vertex Tool"), "ic_vertex_tool_white_24dp", "VertexEditorToolbar.qml")
+    editors.addEditor(qsTr("Split Tool"), "ic_split_tool_white_24dp", "SplitFeatureToolbar.qml", GeometryEditorsModelSingleton.Line | GeometryEditorsModelSingleton.Polygon)
+    editors.addEditor(qsTr("Fill Ring Tool"), "ic_ring_tool_white_24dp", "FillRingToolBar.qml", GeometryEditorsModelSingleton.Polygon)
   }
 
   function init() {
-    selectorRow.stateVisible = false
-    var lastUsed = settings.value( "/QField/GeometryEditorLastUsed", 0 )
-    var toolbarQml = editors.data(editors.index(lastUsed,0), GeometryEditorsModelSingleton.ToolbarRole)
-    var iconPath = editors.data(editors.index(lastUsed,0), GeometryEditorsModelSingleton.IconPathRole)
-    toolbarRow.load(toolbarQml, iconPath)
+    var lastUsed = settings.value( "/QField/GeometryEditorLastUsed", -1 )
+    if (lastUsed >= 0)
+    {
+      selectorRow.stateVisible = false
+      var toolbarQml = editors.data(editors.index(lastUsed, 0), GeometryEditorsModelSingleton.ToolbarRole)
+      var iconPath = editors.data(editors.index(lastUsed, 0), GeometryEditorsModelSingleton.IconPathRole)
+      var name = editors.data(editors.index(lastUsed, 0), GeometryEditorsModelSingleton.NameRole)
+      toolbarRow.load(toolbarQml, iconPath, name)
+    }
   }
 
   function cancelEditors() {
@@ -53,7 +57,7 @@ VisibilityFadingRow {
 
   VisibilityFadingRow {
     id: selectorRow
-    stateVisible: false
+    stateVisible: true
 
     spacing: 4 * dp
 
@@ -69,9 +73,8 @@ VisibilityFadingRow {
           if (toolbarRow.item)
             toolbarRow.item.cancel()
           selectorRow.stateVisible = false
-          toolbarRow.load(toolbar, iconPath)
+          toolbarRow.load(toolbar, iconPath, name)
           settings.setValue( "/QField/GeometryEditorLastUsed", index )
-          displayToast(name)
         }
       }
     }
@@ -80,13 +83,13 @@ VisibilityFadingRow {
   Loader {
     id: toolbarRow
 
-    width: item && item.stateVisible ? item.implicitWidth : 0
+    width: item && item.stateVisible ? item.implicitWidth : 0   
 
-    function load(qmlSource, iconPath){
+    function load(qmlSource, iconPath, name){
       source = qmlSource
       item.init(geometryEditorsToolbar.featureModel, geometryEditorsToolbar.mapSettings, geometryEditorsToolbar.editorRubberbandModel)
       toolbarRow.item.stateVisible = true
-      activeToolButton.iconSource = Theme.getThemeIcon(iconPath)
+      displayToast(name)
     }
   }
 
@@ -97,10 +100,12 @@ VisibilityFadingRow {
 
   Button {
     id: activeToolButton
+    iconSource: Theme.getThemeIcon("more_horiz")
     round: true
     visible: !selectorRow.stateVisible && !( toolbarRow.item && toolbarRow.item.stateVisible && toolbarRow.item.blocking )
     bgcolor: Theme.mainColor
     onClicked: {
+      toolbarRow.item.cancel()
       toolbarRow.source = ''
       selectorRow.stateVisible = true
     }

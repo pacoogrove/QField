@@ -47,7 +47,7 @@ VisibilityFadingRow {
     iconSource: Theme.getThemeIcon( "ic_clear_white_24dp" )
     visible: rubberbandModel && rubberbandModel.vertexCount > 1
     round: true
-    bgcolor: "#900000"
+    bgcolor: Theme.darkRed
 
     onClicked: {
       cancel()
