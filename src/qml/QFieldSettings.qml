@@ -280,7 +280,7 @@ Page {
                 Label {
                     padding: 8 * dp
                     leftPadding: 22 * dp
-                    text: qsTr( "Fast (auto save) mode" )
+                    text: qsTr( "Fast editing mode" )
                     font: Theme.defaultFont
 
                     wrapMode: Text.WordWrap
@@ -297,7 +297,7 @@ Page {
                     padding: 8 * dp
                     topPadding: 0
                     leftPadding: 22 * dp
-                    text: qsTr( "If enabled, the feature is stored after having a valid geometry and the constraints are fulfilled and atributes are commited immediately" )
+                    text: qsTr( "If enabled, the feature is saved as soon it has a valid geometry and the constraints are fulfilled." )
                     font: Theme.tipFont
 
                     wrapMode: Text.WordWrap
@@ -310,7 +310,6 @@ Page {
 
             QfSwitch {
                 id: autoSaveCheckBox
-                checked: true
                 Layout.alignment: Qt.AlignTop
             }
 
