@@ -125,6 +125,13 @@ class VertexModel : public QStandardItemModel
 
     Q_INVOKABLE void removeCurrentVertex();
 
+
+    /**
+     * sets the geometry to the given \a geometry but preserves the index of the current vertex
+     * this is used to update the original geometry while still editing the model
+     */
+    Q_INVOKABLE void updateGeometry( const QgsGeometry &geometry );
+
     //! \copydoc editingMode
     EditingMode editingMode() const;
     //! \copydoc editingMode
@@ -157,7 +164,7 @@ class VertexModel : public QStandardItemModel
     QVector<QgsPoint> flatVertices() const;
 
     //! Returns a list of moved vertices found in linked geometry
-    QVector<QPair<QgsPoint,QgsPoint>> verticesMoved() const;
+    QVector<QPair<QgsPoint, QgsPoint>> verticesMoved() const;
 
     //! Returns a list of added vertices not found in linked geometry
     QVector<QgsPoint> verticesDeleted() const { return mVerticesDeleted; }

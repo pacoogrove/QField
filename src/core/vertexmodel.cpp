@@ -226,6 +226,15 @@ void VertexModel::removeCurrentVertex()
   setCurrentVertex( mCurrentIndex, true );
 }
 
+void VertexModel::updateGeometry( const QgsGeometry &geometry )
+{
+  int preservedIndex = mCurrentIndex;
+  setGeometry( geometry );
+  //since the index is shifted after reload, we decrement
+  mCurrentIndex = preservedIndex - 1;
+  setCurrentVertex( mCurrentIndex );
+}
+
 VertexModel::EditingMode VertexModel::editingMode() const
 {
   return mMode;
@@ -434,9 +443,9 @@ QVector<QgsPoint> VertexModel::flatVertices() const
   return vertices;
 }
 
-QVector<QPair<QgsPoint,QgsPoint>> VertexModel::verticesMoved() const
+QVector<QPair<QgsPoint, QgsPoint>> VertexModel::verticesMoved() const
 {
-  QVector<QPair<QgsPoint,QgsPoint>> vertices;
+  QVector<QPair<QgsPoint, QgsPoint>> vertices;
   for ( int r = 0; r < rowCount(); r++ )
   {
     QStandardItem *it = item( r );
@@ -445,7 +454,7 @@ QVector<QPair<QgsPoint,QgsPoint>> VertexModel::verticesMoved() const
     QgsPoint originalPoint = it->data( OriginalPointRole ).value<QgsPoint>();
     QgsPoint point = it->data( PointRole ).value<QgsPoint>();
     if ( point != originalPoint )
-      vertices << qMakePair( originalPoint, point);
+      vertices << qMakePair( originalPoint, point );
   }
   return vertices;
 }
